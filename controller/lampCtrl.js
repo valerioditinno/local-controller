@@ -1,6 +1,7 @@
 var config = require('../controller/util/config');
 
-var http = require("http");
+var requestModule = require('request');
+
 
 exports.updateLamp = updateLampFn;
 
@@ -12,90 +13,81 @@ exports.deleteLamp = deleteLampFn;
 
 function updateLampFn(myObject) {
 
-    myObject.id;
 
-    config;
+    if (!myObject.id || !myObject.intensityAdjustment){
+        console.log("Invalid Object");
+        return;
+    }
 
-    //Rest
-    var options = {
-        "method": "POST",
-        "hostname": "localhost",
-        "port": "8080",
-        "path": "/updateLamp"
-    };
+    var options = { method: 'POST',
+        url: 'http://10.220.170.236:8080/adjustStreetLampLigthIntensity/',
+        headers: {
+                'content-type': 'application/json'
+            },
+        body: myObject,
+        json: true };
 
-    var req = http.request(options, function (result) {
-
-
-        resultzip.on("data", function () {
-
-        });
-
-        resultzip.on("end", function () {
-
-
-        });
+    requestModule(options, function (error, response, body) {
+        if (error){
+            console.log(error);
+            return;
+        }else{
+            console.log("Adjustment{id-value}:"+myObject.id + " - " + myObject.intensityAdjustment);
+        }
     });
+
 }
 
 function deleteLampFn(request,response) {
 
 
-    console.log(request)
-    response.status(200).send({
-        status: "S",
-        message: "Updated preferences"
-    });
+    if (!request.params.id){
+        response.status(400).send({status:"E",message:"Bad input"});
+        return;
+    }
+    var options = { method: 'POST',
+        url: 'http://10.220.170.236:8080/deleteStreetLamp/',
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: {
+            "id":request.params.id
+        },
+        json: true };
 
-    //Rest
-    var options = {
-        "method": "POST",
-        "hostname": "localhost",
-        "port": "8080",
-        "path": "/updateLamp"
-    };
-
-    var req = http.request(options, function (result) {
-
-
-        resultzip.on("data", function () {
-
-        });
-
-        resultzip.on("end", function () {
-
-
-        });
+    requestModule(options, function (error, res, body) {
+        if (error || res.statusCode >= 400){
+            console.log(error);
+            response.status(500).send({status:"E",message:"Internal Server Error"});
+            return;
+        }else{
+            response.status(200).send({status:"S",message:"Deleted {id}:" + request.params.id});
+            return;
+        }
     });
 }
 
 function insertLampFn(request,response) {
 
-    console.log(request);
-    response.status(200).send({
-        status: "S",
-        message: "Done"
-    });
+    //parse body
+    var options = { method: 'POST',
+        url: 'http://10.220.170.236:8080/insertNewStreetLamp/',
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: request.body,
+        json: true };
 
-    //Rest
-    var options = {
-        "method": "POST",
-        "hostname": "localhost",
-        "port": "8080",
-        "path": "/updateLamp"
-    };
-
-    var req = http.request(options, function (result) {
-
-
-        resultzip.on("data", function () {
-
-        });
-
-        resultzip.on("end", function () {
-
-
-        });
+    requestModule(options, function (error, res, body) {
+        if (error || res.statusCode >= 400){
+            console.log(res);
+            console.log(body);
+            response.status(500).send({status:"E",message:"Internal Server Error"});
+            return;
+        }else{
+            response.status(200).send({status:"S",message:"Added new Lamp {id}:" + request.body.id});
+            return;
+        }
     });
 }
 

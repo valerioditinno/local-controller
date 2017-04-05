@@ -17,16 +17,18 @@
 // Load the SDK and UUID
 var AWS = require('aws-sdk');
 var uuid = require('node-uuid');
+var bodyParser = require('body-parser');
 
 var express = require('express');
-
 var kafkaCtrl = require('./controller/kafkaCtrl');
 // create a new express server
 var app = express();
-
+app.use(bodyParser.json());
 // serve the files out of ./public as our main files
 
 require('./routes/route')(app);
+
+
 
 kafkaCtrl.initKafka();
 
