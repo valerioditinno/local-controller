@@ -1,10 +1,20 @@
 {
+  "name": "NodejsStarterApp",
+  "version": "0.0.1",
+  "description": "A sample nodejs app for Bluemix",
+  "scripts": {
+    "start": "node app.js"
+  },
   "dependencies": {
-    "aws-sdk": ">= 2.0.9",
     "body-parser": "^1.17.1",
+    "cfenv": "^1.0.4",
     "express": "^4.15.2",
-    "node-rdkafka": "^0.8.0",
-    "node-uuid": ">= 1.4.1",
+    "kafkaesque": "^1.0.1",
     "request": "^2.81.0"
+  },
+  "repository": {},
+  "engines": {
+    "npm": "3.10.8",
+    "node": "6.9.1"
   }
 }

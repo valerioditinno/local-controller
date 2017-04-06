@@ -1,4 +1,4 @@
-var Kafka = require('node-rdkafka');
+/*var kafka = require('kafka')
 
 var lampCtrl = require('../controller/lampCtrl');
 
@@ -6,39 +6,51 @@ exports.initKafka = initKafkaFn;
 
 function initKafkaFn() {
 
-    var consumer = new Kafka.KafkaConsumer({
-        'group.id': 'kafka',
-        'metadata.broker.list': 'localhost:9092'
-    }, {});
 
-    var stream = consumer.getReadStream('lampInfo');
-
-    consumer.connect();
-
-
-    consumer
-        .on('ready', function() {
-            consumer.subscribe(['lampInfo']);
-
-            // Consume from the librdtesting-01 topic. This is what determines
-            // the mode we are running in. By not specifying a callback (or specifying
-            // only a callback) we get messages as soon as they are available.
-            consumer.consume(function (err,message) {
-                console.log("message"+message);
-            });
-        })
-        .on('data', function(data) {
-            // Output the actual message contents
-            console.log(data.value.toString());
-            var myValue = data.value.toString();
-            var toUpdate = JSON.parse(myValue);
-            lampCtrl.updateLamp(toUpdate)
-        })
-        .on('error',function (err) {
-            console.log(err);
-        });
-}
+    var consumer = new kafka.Consumer({
+        // these are the default values
+        host:         'localhost',
+        port:          9092,
+        pollInterval:  2000,
+        maxSize:       1048576 // 1MB
+    })
+    consumer.on('message', function(topic, message) {
+        console.log(message)
+    })
+    consumer.connect(function() {
+        consumer.subscribeTopic({name: 'lampInfo', partition: 0})
+    })
+}*/
 
 
 
 
+// create a kafkaesqe client, providing at least one broker
+var kafkaesque = require('kafkaesque')({
+    brokers: [{host: 'localhost', port: 9092}]
+});
+
+// subscribe to a partitioned topic
+// this topic can have a large number of partitions, but using kafkaesque,
+// these can be split evenly between members of the group.
+kafkaesque.subscribe('lampInfo');
+
+// connect gives a nice EventEmitter interface for receiving messages
+kafkaesque.connect(function (err, kafka) {
+    if (err) {
+        throw new Error('problem connecting to auto managed kafka cluster' + err);
+    }
+
+    // handle each message
+    kafka.on('message', function(message, commit) {
+        console.log(message.value);
+        // once a message has been successfull handled, call commit to advance this
+        // consumers position in the topic / parition
+        commit();
+    });
+
+    // report errors
+    kafka.on('error', function(error) {
+        console.log(error);
+    });
+});

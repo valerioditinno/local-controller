@@ -15,8 +15,7 @@
 **/
 
 // Load the SDK and UUID
-var AWS = require('aws-sdk');
-var uuid = require('node-uuid');
+var cfenv = require('cfenv');
 var bodyParser = require('body-parser');
 
 var express = require('express');
@@ -24,17 +23,15 @@ var kafkaCtrl = require('./controller/kafkaCtrl');
 // create a new express server
 var app = express();
 app.use(bodyParser.json());
-// serve the files out of ./public as our main files
 
 require('./routes/route')(app);
 
+//kafkaCtrl.initKafka();
 
+var appEnv = cfenv.getAppEnv();
 
-kafkaCtrl.initKafka();
-
-var port = process.env.PORT || 3000;
-
-app.listen(port, function () {
-    console.log('Server running at http://127.0.0.1:' + port + '/');
+// start server on the specified port and binding host
+app.listen(appEnv.port, '0.0.0.0', function() {
+    // print a message when the server starts listening
+    console.log("server starting on " + appEnv.url);
 });
-
