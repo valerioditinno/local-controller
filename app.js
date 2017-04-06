@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 
 require('./routes/route')(app);
 
-//kafkaCtrl.initKafka();
+kafkaCtrl.initKafka();
 
 var appEnv = cfenv.getAppEnv();
 

@@ -18,9 +18,9 @@ function updateLampFn(myObject) {
         console.log("Invalid Object");
         return;
     }
-
+    var host = config[myObject.id];
     var options = { method: 'POST',
-        url: 'http://10.220.170.236:8080/adjustStreetLampLigthIntensity/',
+        url: 'http://'+host+'/adjustStreetLampLigthIntensity/',
         headers: {
                 'content-type': 'application/json'
             },
@@ -45,8 +45,9 @@ function deleteLampFn(request,response) {
         response.status(400).send({status:"E",message:"Bad input"});
         return;
     }
+    var host = config[request.params.id];
     var options = { method: 'POST',
-        url: 'http://10.220.170.236:8080/deleteStreetLamp/',
+        url: 'http://'+host+'/deleteStreetLamp/',
         headers: {
             'content-type': 'application/json'
         },
@@ -68,10 +69,16 @@ function deleteLampFn(request,response) {
 }
 
 function insertLampFn(request,response) {
-
     //parse body
+    if (!request.body || !request.body.id || !request.body.position ||
+        !request.body.lightIntensity || !request.body.bulbModel || !request.body.powerConsumption ||
+        !request.body.state || !request.body.lastSubstitutionDate){
+        response.status(400).send({status:"E",message:"Bad Input"});
+        return;
+    }
+    var host = config[request.body.id];
     var options = { method: 'POST',
-        url: 'http://10.220.170.236:8080/insertNewStreetLamp/',
+        url: 'http://'+host+'/insertNewStreetLamp/',
         headers: {
             'content-type': 'application/json'
         },
