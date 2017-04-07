@@ -22,9 +22,7 @@ function initKafkaFn() {
 
         // handle each message
         kafka.on('message', function(message, commit) {
-            console.log(message.value);
-            // once a message has been successfull handled, call commit to advance this
-            // consumers position in the topic / parition
+            lampCtrl.updateLamp(JSON.parse(message.value));
             commit();
         });
 
