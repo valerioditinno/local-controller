@@ -109,3 +109,6 @@ local.properties
 /target/
 
 node_modules
+
+controller/util/cloudantConfig.js
+
