@@ -4,8 +4,8 @@ applications:
   memory: 256M
   instances: 1
   domain: eu-gb.mybluemix.net
-  name: local-controller
-  host: local-controller
+  name: local-controller-ls
+  host: local-controller-ls
   disk_quota: 256M
   command: node app.js
   buildpack: sdk-for-nodejs

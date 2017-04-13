@@ -2,6 +2,8 @@ var config = require('../controller/util/config');
 
 var requestModule = require('request');
 
+var lightSystemDb = null;
+
 
 exports.updateLamp = updateLampFn;
 
@@ -18,6 +20,10 @@ function updateLampFn(myObject) {
         console.log("Invalid Object");
         return;
     }
+
+    if (!lightSystemDb)
+        lightSystemDb = cloudantCtrl.getLightSystemDb();
+
     var host = config[myObject.id];
     var options = { method: 'POST',
         url: 'http://'+host+'/adjustStreetLampLigthIntensity/',
@@ -45,6 +51,7 @@ function deleteLampFn(request,response) {
         response.status(400).send({status:"E",message:"Bad input"});
         return;
     }
+
     var host = config[request.params.id];
     var options = { method: 'POST',
         url: 'http://'+host+'/deleteStreetLamp/',
