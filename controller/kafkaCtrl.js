@@ -1,7 +1,4 @@
-// create a kafkaesqe client, providing at least one broker
-var kafkaesque = require('kafkaesque')({
-    brokers: [{host: 'localhost', port: 9092}]
-});
+
 
 var lampCtrl = require('../controller/lampCtrl');
 
@@ -9,27 +6,46 @@ exports.initKafka = initKafkaFn;
 
 
 function initKafkaFn() {
-// subscribe to a partitioned topic
-// this topic can have a large number of partitions, but using kafkaesque,
-// these can be split evenly between members of the group.
-    kafkaesque.subscribe('lampInfo');
+    var topics = [ 'rank','warning_hour'
+        ,'warning_day'
+        ,'warning_hour'
+        ,'warning_week'
+        ,'hour_lamp_cons'
+        ,'day_lamp_cons'
+        ,'week_lamp_cons'
+        ,'hour_street_cons'
+        ,'day_street_cons'
+        ,'week_street_cons'
+        ,'hour_city_cons'
+        ,'day_city_cons'
+        ,'week_city_cons'];
+    var kafkaTopics = [];
+    for (var i = 0 ; i < topics.length ; i++){
+        var topic = {};
+        topic.topic = topics[i];
+        topic.partition = 0;
+        kafkaTopics.push(topic)
+    }
+    var kafka = require('kafka-node'),
+        Consumer = kafka.Consumer,
+        client = new kafka.Client('localhost:2181'),
+        consumer = new Consumer(
+            client,
+            kafkaTopics
+            ,
+            {
+                autoCommit: false
+            }
+        );
 
-// connect gives a nice EventEmitter interface for receiving messages
-    kafkaesque.connect(function (err, kafka) {
-        if (err) {
-            throw new Error('problem connecting to auto managed kafka cluster' + err);
-        }
-
-        // handle each message
-        kafka.on('message', function(message, commit) {
-            lampCtrl.updateLamp(JSON.parse(message.value));
-            commit();
-        });
-
-        // report errors
-        kafka.on('error', function(error) {
-            console.log(error);
-        });
+    consumer.on('message', function (message) {
+        console.log(message);
+        lampCtrl.updateLamp(message.value);
     });
+
+    consumer.on('error',function (error) {
+        console.log(error);
+    });
+
 }
 
