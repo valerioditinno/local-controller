@@ -13,7 +13,7 @@ function initKafkaFn() {
         client = new kafka.Client('localhost:2181'),
         consumer = new Consumer(
             client,
-            [{topic:'control',partition:0}]
+            [{topic:'adjustment_data',partition:0}]
             ,
             {
                 autoCommit: false

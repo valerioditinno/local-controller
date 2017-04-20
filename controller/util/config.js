@@ -1,5 +1,5 @@
 var configuration = {
-    "lampId": 'localhost:8080'
+    "lampId": '10.220.170.236:8080'
 
 };
 

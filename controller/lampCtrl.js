@@ -2,9 +2,6 @@ var config = require('../controller/util/config');
 
 var requestModule = require('request');
 
-var lightSystemDb = null;
-
-
 exports.updateLamp = updateLampFn;
 
 exports.insertLamp = insertLampFn;
@@ -21,10 +18,7 @@ function updateLampFn(myObject) {
         return;
     }
 
-    if (!lightSystemDb)
-        lightSystemDb = cloudantCtrl.getLightSystemDb();
-
-    var host = config[myObject.id];
+    var host = config.getLampIP(myObject.id);
     var options = { method: 'POST',
         url: 'http://'+host+'/adjustStreetLampLigthIntensity/',
         headers: {
@@ -52,14 +46,15 @@ function deleteLampFn(request,response) {
         return;
     }
 
-    var host = config[request.params.id];
+
+    var host = config.getLampIP(request.params.id);
     var options = { method: 'POST',
         url: 'http://'+host+'/deleteStreetLamp/',
         headers: {
             'content-type': 'application/json'
         },
         body: {
-            "id":request.params.id
+            "lampId":request.params.id
         },
         json: true };
 
@@ -77,13 +72,14 @@ function deleteLampFn(request,response) {
 
 function insertLampFn(request,response) {
     //parse body
-    if (!request.body || !request.body.id || !request.body.position ||
-        !request.body.lightIntensity || !request.body.bulbModel || !request.body.powerConsumption ||
-        !request.body.state || !request.body.lastSubstitutionDate){
+    if (request.body === undefined || request.body.lampId === undefined || request.body.address === undefined ||
+        request.body.lightIntensity === undefined || request.body.model===undefined || request.body.consumption=== undefined ||
+        request.body.stateOn === undefined || request.body.lastSubstitutionDate === undefined || request.body.residualLifeTime === undefined||
+        request.body.latitude === undefined || request.body.longitude === undefined || request.body.timestamp === undefined || request.body.city === undefined){
         response.status(400).send({status:"E",message:"Bad Input"});
         return;
     }
-    var host = config[request.body.id];
+    var host = config.getLampIP(request.body.lampId);
     var options = { method: 'POST',
         url: 'http://'+host+'/insertNewStreetLamp/',
         headers: {
@@ -94,8 +90,7 @@ function insertLampFn(request,response) {
 
     requestModule(options, function (error, res, body) {
         if (error || res.statusCode >= 400){
-            console.log(res);
-            console.log(body);
+
             response.status(500).send({status:"E",message:"Internal Server Error"});
             return;
         }else{
