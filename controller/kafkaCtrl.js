@@ -22,8 +22,8 @@ function initKafkaFn() {
 
 
     consumer.on('message', function (message) {
-        console.log(message);
-        lampCtrl.updateLamp(message.value);
+        var messageObject = JSON.parse(message.value);
+        lampCtrl.updateLamp(messageObject);
     });
 
     consumer.on('error',function (error) {

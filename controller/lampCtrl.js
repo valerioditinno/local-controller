@@ -12,12 +12,17 @@ exports.deleteLamp = deleteLampFn;
 
 function updateLampFn(myObject) {
 
-
-    if (!myObject.id || !myObject.intensityAdjustment){
+    /**
+     * Control over object field
+     */
+    if (!myObject.lampId || !myObject.lightIntensityAdjustment ){
         console.log("Invalid Object");
         return;
     }
-
+    /**
+     * if field of myObject is not required in sensor-system use:
+     * delete myObject.propertyX;
+     */
     var host = config.getLampIP(myObject.id);
     var options = { method: 'POST',
         url: 'http://'+host+'/adjustStreetLampLigthIntensity/',
@@ -33,6 +38,7 @@ function updateLampFn(myObject) {
             return;
         }else{
             console.log("Adjustment{id-value}:"+myObject.id + " - " + myObject.intensityAdjustment);
+            return;
         }
     });
 
