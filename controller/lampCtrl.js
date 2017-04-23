@@ -25,7 +25,7 @@ function updateLampFn(myObject) {
      */
     var host = config.getLampIP(myObject.id);
     var options = { method: 'POST',
-        url: 'http://'+host+'/adjustStreetLampLigthIntensity/',
+        url: 'http://'+host+'/adjustStreetLampLightIntensity/',
         headers: {
                 'content-type': 'application/json'
             },
@@ -37,7 +37,7 @@ function updateLampFn(myObject) {
             console.log(error);
             return;
         }else{
-            console.log("Adjustment{id-value}:"+myObject.id + " - " + myObject.intensityAdjustment);
+            console.log("Adjustment{id-value}:"+myObject.lampId + " - " + myObject.lightIntensityAdjustment);
             return;
         }
     });
@@ -105,4 +105,3 @@ function insertLampFn(request,response) {
         }
     });
 }
-
