@@ -37,12 +37,14 @@ function initKafkaFn() {
             consumerTopics,
             {
                 autoCommit: false,
-                fromOffset: true,
+                fromOffset: true
             }
         );
         consumer.on('message', function (message) {
             console.log("topic : " + message.topic);
-            console.log("topic content: " + message.value);;
+            console.log("topic content: " + message.value);
+            var myObject = JSON.parse(message.value);
+            lampCtrl.updateLamp(myObject);
         });
         consumer.on('error',function (error) {
             console.log(error);

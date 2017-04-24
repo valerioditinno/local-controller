@@ -15,7 +15,8 @@ function updateLampFn(myObject) {
     /**
      * Control over object field
      */
-    if (!myObject.lampId || !myObject.lightIntensityAdjustment ){
+    if (!myObject || (myObject.lampId === null || myObject.lampId===undefined)
+        || (myObject.lightIntensityAdjustment === null || myObject.lightIntensityAdjustment === undefined) ){
         console.log("Invalid Object");
         return;
     }
