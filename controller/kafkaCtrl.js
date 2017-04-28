@@ -1,4 +1,4 @@
-
+var config = require('../controller/util/config')
 
 var lampCtrl = require('../controller/lampCtrl');
 
@@ -20,7 +20,7 @@ function initKafkaFn() {
     }
     var kafka = require('kafka-node'),
         Consumer = kafka.Consumer,
-        client = new kafka.Client('localhost:2181'),
+        client = new kafka.Client(config.getZookeeperHost()),
         offset = new kafka.Offset(client);
 
     offset.fetch(kafkaTopics, function (err, data) {
@@ -50,6 +50,7 @@ function initKafkaFn() {
             console.log(error);
         })
     });
+
 
 
 }
