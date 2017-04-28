@@ -14,7 +14,7 @@ Configurare gli host di zookeeper per kafka e del sistema di sensori in `control
 
 Per avviare l'applicazione eseguire nella directory contenente il file app.js, i comandi :
 
-- npm install 
+- `npm install`
 
-- node app.js
+- `node app.js`
 
