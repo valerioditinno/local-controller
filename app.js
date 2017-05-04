@@ -1,11 +1,24 @@
-
+/**
+ * Cloud Foundry environment
+ */
 var cfenv = require('cfenv');
 var bodyParser = require('body-parser');
-
 var express = require('express');
+
+/**
+ * Kafka Controller in controller directory
+ */
 var kafkaCtrl = require('./controller/kafkaCtrl');
-// create a new express server
+
+
+/**
+ * Create new express Server
+ */
 var app = express();
+
+/**
+ * Parse JSON body
+ */
 app.use(bodyParser.json());
 
 app.use(function (req, res, next) {
@@ -32,8 +45,14 @@ app.use(function (req, res, next) {
     next();
 });
 
+/**
+ * route module for REST API
+ */
 require('./routes/route')(app);
 
+/**
+ * Init Kafka consumer
+ */
 kafkaCtrl.initKafka();
 
 var appEnv = cfenv.getAppEnv();

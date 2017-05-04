@@ -9,20 +9,24 @@ exports.insertLamp = insertLampFn;
 exports.deleteLamp = deleteLampFn;
 
 
-
+/**
+ * Get a object for adjusment from KafkaCtrl
+ * Validate Object and send it with REST API to sensors system
+ * @param myObject
+ */
 function updateLampFn(myObject) {
 
     /**
-     * Control over object field
+     * Control over object fields
      */
     if (!myObject || (myObject.lampId === null || myObject.lampId===undefined)
         || (myObject.lightIntensityAdjustment === null || myObject.lightIntensityAdjustment === undefined) ){
         console.log("Invalid Object");
         return;
     }
+
     /**
-     * if field of myObject is not required in sensor-system use:
-     * delete myObject.propertyX;
+     * get right IP for the lamp with ID
      */
     var host = config.getLampIP(myObject.id);
     var options = { method: 'POST',
@@ -45,9 +49,17 @@ function updateLampFn(myObject) {
 
 }
 
+/**
+ * Validate id param from HTTP request and call sensor-system with REST API
+ * to delete a Lamp
+ * @param request - HTTP request
+ * @param response - HTTP response
+ */
 function deleteLampFn(request,response) {
 
-
+    /**
+     * validate id
+     */
     if (!request.params.id){
         response.status(400).send({status:"E",message:"Bad input"});
         return;
@@ -77,8 +89,17 @@ function deleteLampFn(request,response) {
     });
 }
 
+/**
+ * Parse body from http request and call sensors-system with REST API
+ * to add new Lamp
+ * @param request - HTTP request
+ * @param response - HTTP response
+ */
 function insertLampFn(request,response) {
-    //parse body
+
+    /**
+     * Validate Body
+     */
     if (request.body === undefined || request.body.lampId === undefined || request.body.address === undefined ||
         request.body.lightIntensity === undefined || request.body.model===undefined || request.body.consumption=== undefined ||
         request.body.stateOn === undefined || request.body.lastSubstitutionDate === undefined || request.body.residualLifeTime === undefined||

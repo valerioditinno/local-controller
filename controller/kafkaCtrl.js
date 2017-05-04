@@ -4,7 +4,10 @@ var lampCtrl = require('../controller/lampCtrl');
 
 exports.initKafka = initKafkaFn;
 
-
+/**
+ * Subscribe to topic KAFKA from latest offset ignoring oldest data
+ * When a message is received, call LampCtrl to send it to sensors-system
+ */
 function initKafkaFn() {
 
     var topics = [ 'adjustment_data'];
