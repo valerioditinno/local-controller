@@ -5,7 +5,7 @@
  * @type {{lampId: string, zookeeper: string}}
  */
 var configuration = {
-    "lampId": '54.165.184.179:8080',
+    "lampId": '52.91.189.10:8080',
     "zookeeper":'54.152.81.214:2181'
 
 };

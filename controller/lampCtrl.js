@@ -73,7 +73,7 @@ function deleteLampFn(request,response) {
             'content-type': 'application/json'
         },
         body: {
-            "lampId":request.params.id
+            'lampId':request.params.id
         },
         json: true };
 
